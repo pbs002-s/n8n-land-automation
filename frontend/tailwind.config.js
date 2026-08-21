@@ -1,53 +1,64 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: 'class',
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    // Every color is a token. No raw hex in components.
     extend: {
-      fontFamily: {
-        sans: ['Geist', 'Inter', '"Anek Bangla"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        bangla: ['"Anek Bangla"', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
-        display: ['Geist', 'Inter', 'sans-serif'],
-      },
       colors: {
-        dark: {
-          bg: '#030303',
-          surface: '#18181B',
-          surfaceHover: '#202024',
-          card: '#121215',
-          border: '#27272A',
-          borderSubtle: '#1f1f23',
-          textPrimary: '#FFFFFF',
-          textSecondary: '#A1A1AA',
-          textMuted: '#71717A',
-        },
-        nova: {
-          primary: '#34D399',
-          secondary: '#60A5FA',
-          accent: '#60A5FA',
-        },
-        gov: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
-          950: '#052e16',
-        }
+        ground: 'var(--ground)',
+        'ground-sunk': 'var(--ground-sunk)',
+        sheet: 'var(--sheet)',
+        'sheet-raised': 'var(--sheet-raised)',
+        line: 'var(--line)',
+        'line-strong': 'var(--line-strong)',
+        'line-hair': 'var(--line-hair)',
+        ink: 'var(--ink)',
+        'ink-2': 'var(--ink-2)',
+        'ink-3': 'var(--ink-3)',
+        indigo: 'var(--indigo)',
+        'indigo-ink': 'var(--indigo-ink)',
+        'indigo-soft': 'var(--indigo-soft)',
+        seal: 'var(--seal)',
+        'seal-soft': 'var(--seal-soft)',
+        state: 'var(--state)',
+        'state-soft': 'var(--state-soft)',
+        amber: 'var(--amber)',
+        'amber-soft': 'var(--amber-soft)',
       },
-      boxShadow: {
-        'subtle': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
-        'elevated': '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04)',
-        'dark-card': '0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px -1px rgba(0, 0, 0, 0.4)',
-        'dark-glow': '0 0 20px -5px rgba(52, 211, 153, 0.15)',
-      }
+      fontFamily: {
+        sans: ['"Anek Latin"', '"Anek Bangla"', '-apple-system', 'sans-serif'],
+        bangla: ['"Anek Bangla"', '"Anek Latin"', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+      },
+      fontSize: {
+        // 1.2 ratio, capped — a register has few sizes, used consistently
+        '2xs': ['0.6875rem', { lineHeight: '1rem', letterSpacing: '0.04em' }],
+        xs: ['0.75rem', { lineHeight: '1.1rem' }],
+        sm: ['0.8125rem', { lineHeight: '1.25rem' }],
+        base: ['0.9375rem', { lineHeight: '1.6' }],
+        lg: ['1.125rem', { lineHeight: '1.45' }],
+        xl: ['1.375rem', { lineHeight: '1.3' }],
+        '2xl': ['1.75rem', { lineHeight: '1.2', letterSpacing: '-0.015em' }],
+        '3xl': ['2.25rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+        '4xl': ['3rem', { lineHeight: '1.04', letterSpacing: '-0.025em' }],
+        '5xl': ['4rem', { lineHeight: '1.0', letterSpacing: '-0.03em' }],
+      },
+      borderRadius: {
+        // Sharp. This is a document, not a bubble.
+        none: '0',
+        sm: '2px',
+        DEFAULT: '3px',
+        md: '4px',
+        lg: '6px',
+        xl: '8px',
+      },
+      transitionTimingFunction: {
+        sheet: 'cubic-bezier(0.2, 0.7, 0.2, 1)',
+      },
+      transitionDuration: { 1: '140ms', 2: '260ms', 3: '520ms' },
+      maxWidth: { measure: '62ch', shell: '1240px' },
     },
   },
   plugins: [],
-}
+};

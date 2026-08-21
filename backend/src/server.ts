@@ -10,13 +10,81 @@ app.use(cors());
 app.use(express.json());
 
 // Health Check
-app.get('/api/health', (req: Request, res: Response) => {
+app.get('/api/health', async (req: Request, res: Response) => {
+  let database = 'unreachable';
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    database = 'connected';
+  } catch {
+    // Report the truth. A health check that always says "connected" is
+    // worse than no health check.
+  }
   res.json({
     status: 'online',
-    system: 'Bangladesh Digital Land Automation Engine',
-    timestamp: new Date().toISOString(),
-    database: 'PostgreSQL + PostGIS Connected',
-    n8nEngine: 'Webhook Dispatcher Ready'
+    service: 'land record API',
+    database,
+    timestamp: new Date().toISOString()
+  });
+});
+
+/* ------------------------------------------------------------------ auth
+   Demonstration sign-in. Deliberately NOT a real authentication system:
+   no password store, no session secret, no token verification. It exists
+   so the frontend can exercise a two-step identity flow. Replace entirely
+   before this touches a real record.
+------------------------------------------------------------------------ */
+
+const DEMO_ACCOUNTS = [
+  {
+    role: 'citizen',
+    name: 'Md. Rafiqul Islam',
+    nid: '19852691234567890',
+    phone: '01711223344',
+    parcels: ['BD-DHK-SAV-000001']
+  },
+  {
+    role: 'officer',
+    name: 'Farhana Akter',
+    nid: '19901122334455660',
+    phone: '01555667788',
+    office: 'AC (Land), Savar',
+    parcels: ['BD-DHK-SAV-000001', 'BD-CTG-PAN-000492']
+  }
+];
+
+const DEMO_CODE = '123456';
+
+// Step 1: claim an identity, receive a code.
+app.post('/api/auth/request-code', (req: Request, res: Response) => {
+  const { nid } = req.body ?? {};
+  if (!nid || String(nid).replace(/\D/g, '').length < 10) {
+    return res.status(400).json({ error: 'Enter the 17-digit number printed on your NID card.' });
+  }
+  // A real service would send an SMS here and reveal nothing about whether
+  // the NID exists. The demo returns the code so the flow can be completed.
+  res.json({ sent: true, demoCode: DEMO_CODE });
+});
+
+// Step 2: exchange the code for a session.
+app.post('/api/auth/verify-code', (req: Request, res: Response) => {
+  const { nid, code, role } = req.body ?? {};
+  if (String(code) !== DEMO_CODE) {
+    return res.status(401).json({ error: 'That code does not match.' });
+  }
+  const account =
+    DEMO_ACCOUNTS.find(a => a.nid === String(nid).replace(/\D/g, '')) ??
+    DEMO_ACCOUNTS.find(a => a.role === role) ??
+    DEMO_ACCOUNTS[0];
+
+  res.json({
+    session: {
+      name: account.name,
+      nid: account.nid,
+      role: account.role,
+      office: 'office' in account ? account.office : undefined,
+      parcels: account.parcels,
+      signedInAt: new Date().toISOString()
+    }
   });
 });
 
