@@ -1,0 +1,317 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   MOUZA SHEET — design tokens
+   Light = "Field Sheet" (drafting film). Dark = "Negative Print".
+   Elevation is drawn with lines, not blur.
+   ============================================================ */
+
+@layer base {
+  :root {
+    /* ground + surfaces */
+    --ground: #efefea;
+    --ground-sunk: #e6e6e0;
+    --sheet: #fbfbf8;
+    --sheet-raised: #ffffff;
+
+    /* rules */
+    --line: #d5d7ce;
+    --line-strong: #b4b8ac;
+    --line-hair: #e2e3dc;
+
+    /* ink */
+    --ink: #14181a;
+    --ink-2: #4a5250;
+    --ink-3: #79817d;
+
+    /* survey indigo — the pen used on mouza sheets */
+    --indigo: #22456e;
+    --indigo-ink: #1a3757;
+    --indigo-soft: #e3eaf3;
+
+    /* registrar's seal — objection, arrear, cancellation ONLY */
+    --seal: #a8322a;
+    --seal-soft: #f7e8e5;
+
+    /* state green — verified / official confirmation ONLY */
+    --state: #116149;
+    --state-soft: #e0efe8;
+
+    /* in progress */
+    --amber: #7f5a10;
+    --amber-soft: #f5eedc;
+
+    --focus: #22456e;
+
+    color-scheme: light;
+  }
+
+  html.dark {
+    --ground: #0b0d0c;
+    --ground-sunk: #070908;
+    --sheet: #121514;
+    --sheet-raised: #171b19;
+
+    --line: #242a27;
+    --line-strong: #363d39;
+    --line-hair: #1a1f1d;
+
+    --ink: #e9ebe6;
+    --ink-2: #a3aba6;
+    --ink-3: #737c77;
+
+    --indigo: #86adda;
+    --indigo-ink: #a6c5e8;
+    --indigo-soft: #13202c;
+
+    --seal: #e07a70;
+    --seal-soft: #2a1613;
+
+    --state: #4fbf95;
+    --state-soft: #0d2019;
+
+    --amber: #d9ae5a;
+    --amber-soft: #221a0b;
+
+    --focus: #86adda;
+
+    color-scheme: dark;
+  }
+
+  /* motion tokens */
+  :root {
+    --ease-sheet: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --dur-1: 140ms;
+    --dur-2: 260ms;
+    --dur-3: 520ms;
+  }
+
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--ground);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    font-family: "Anek Latin", "Anek Bangla", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-variation-settings: "wdth" 100;
+  }
+
+  ::selection {
+    background: var(--indigo);
+    color: var(--sheet-raised);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Bangla is set in the matching family from the same superfamily,
+     so bilingual lines share a skeleton instead of colliding. */
+  .bn {
+    font-family: "Anek Bangla", "Anek Latin", sans-serif;
+    font-variation-settings: "wdth" 100;
+    letter-spacing: 0;
+  }
+
+  /* Title-block headings: condensed, like a map sheet legend */
+  .sheet-title {
+    font-family: "Anek Latin", sans-serif;
+    font-variation-settings: "wdth" 87.5;
+    letter-spacing: -0.02em;
+  }
+
+  .mono {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-feature-settings: "zero" 1;
+  }
+
+  /* Tabular numerals wherever a number can change under the reader */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* The registration cross found in the corner of every survey sheet. */
+  .reg-mark::before,
+  .reg-mark::after {
+    content: "";
+    position: absolute;
+    background: var(--line-strong);
+    pointer-events: none;
+  }
+  .reg-mark::before {
+    width: 9px;
+    height: 1px;
+    top: 10px;
+    left: 6px;
+  }
+  .reg-mark::after {
+    width: 1px;
+    height: 9px;
+    top: 6px;
+    left: 10px;
+  }
+
+  /* Hairline graticule — the sheet's own grid, not a decorative dot field */
+  .graticule {
+    background-image: linear-gradient(to right, var(--line-hair) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line-hair) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+}
+
+/* ============================================================
+   MOTION
+   ============================================================ */
+
+@keyframes line-rise {
+  from {
+    transform: translateY(0.75em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Boundary survey: the parcel outline draws itself */
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes mark-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Field-book caret for typed identifiers */
+@keyframes caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.anim-line-rise {
+  animation: line-rise var(--dur-3) var(--ease-sheet) both;
+}
+.anim-sheet-in {
+  animation: sheet-in var(--dur-3) var(--ease-sheet) both;
+}
+.anim-mark-in {
+  animation: mark-in var(--dur-2) var(--ease-sheet) both;
+}
+.anim-caret {
+  animation: caret 1.1s step-end infinite;
+}
+.anim-marquee {
+  animation: marquee-x 48s linear infinite;
+}
+
+.draw-path {
+  stroke-dasharray: var(--len, 600);
+  stroke-dashoffset: var(--len, 600);
+  animation: draw-line 1.1s var(--ease-sheet) both;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border: 3px solid var(--ground);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .draw-path {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ============================================================
+   PRINT — the দাখিলা is a real document, so it prints like one
+   ============================================================ */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-dakhila,
+  #printable-dakhila * {
+    visibility: visible;
+  }
+  #printable-dakhila {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    margin: 0;
+    padding: 24px;
+    background: #fff !important;
+    color: #000 !important;
+    border: none !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
